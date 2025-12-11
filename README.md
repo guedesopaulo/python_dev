@@ -1,4 +1,4 @@
-# � Python Development Template
+# Python Development Template
 
 A modern Python project template following current best practices as of 2025.
 
@@ -33,12 +33,11 @@ make
 
 ```bash
 make              # Default: setup environment, sync deps, install hooks
-make req          # Update requirements.txt files from pyproject.toml
+make deps         # Sync dependencies and install pre-commit hooks (uv sync + pre-commit install)
+make check        # Run pre-commit hooks against all files
 make test         # Run tests with pytest
-make lint         # Run linting (ruff + mypy)
-make format       # Format code with ruff
+make cov          # Run coverage (erase, run, and report)
 make clean        # Clean cache and build artifacts
-make update-hooks # Update pre-commit hooks to latest versions
 ```
 
 ## 📝 License
