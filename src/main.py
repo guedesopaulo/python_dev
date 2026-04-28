@@ -9,9 +9,9 @@ from fastapi.responses import RedirectResponse
 from fastmcp import FastMCP
 from loguru import logger
 
-import src
 from src.endpoints.echo import router as echo_router
 from src.exception_handlers import register_exception_handlers
+from src.middleware import BearerTokenMiddleware
 
 
 @asynccontextmanager
@@ -25,12 +25,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
 
 app = FastAPI(
     title="python-dev",
-    version=src.__version__,
+    version="0.0.2",
     swagger_ui_parameters={"displayRequestDuration": True},
     lifespan=lifespan,
 )
 
 register_exception_handlers(app)
+app.add_middleware(BearerTokenMiddleware)
 app.include_router(echo_router)
 
 # MCP: auto-generate tools from all FastAPI routes
