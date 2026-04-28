@@ -17,6 +17,7 @@ select = [
   "PD", # pandas-vet
   "RUF" # ruff
 ]
+ignore = ["UP040"]
 fixable = ["I", "UP", "C4"]
 
 [lint.isort]
