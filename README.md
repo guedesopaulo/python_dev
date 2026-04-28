@@ -1,6 +1,6 @@
 # Python Development Template
 
-A modern Python project template following current best practices as of 2025.
+A modern Python project template following current best practices as of 2026.
 
 ## ✨ Features
 

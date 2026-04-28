@@ -1,46 +1,35 @@
 [project]
 name = "python_dev"
-version = "0.0.1"
+version = "0.0.2"
 description = "A template repository for Python projects following best practices"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
     {name = "Paulo Guedes", email = "guedesopaulo@gmail.com"},
 ]
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3 :: Only",
-]
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = [
-    "numpy",
-    # Add your production dependencies here
+    "fastapi>=0.136.1",
+    "fastmcp>=3.2.4",
+    "loguru>=0.7.3",
 ]
 
 [dependency-groups]
 dev = [
-    "coverage>=7.8.0",
     "covdefaults>=2.3.0",
-    "ipdb>=0.13.13",
-    "ipykernel>=6.29.5",
-    "ipython>=9.1.0",
-    "matplotlib>=3.10.1",
-    "mypy==1.15.0",
+    "coverage>=7.13.3",
+    "httpx>=0.28.0",
+    "mypy==1.19.1",
     "pre-commit>=4.2.0",
-    "pytest>=8.3.5",
-    "pytest-asyncio>=1.0.0",
-    "pytest-xdist>=3.6.1",
-    "pydantic>=2.7",
-    "ruff==0.11.6",
-    "scikit-learn>=1.7.1",
-    "types-cachetools>=5.5.0.20240820",
-    "types-requests>=2.32.0.20250328",
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+    "ruff>=0.15.12",
+    "testcontainers>=4.10.0",
+    "types-cachetools>=6.2.0.20251022",
 ]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
@@ -56,6 +45,7 @@ disallow_untyped_defs = true
 ignore_missing_imports = true
 no_implicit_reexport = true
 warn_redundant_casts = true
+warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
 

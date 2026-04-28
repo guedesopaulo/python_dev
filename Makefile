@@ -1,6 +1,6 @@
-all: sync-deps check test
+all: deps check test
 
-.PHONY: sync-deps
+.PHONY: deps
 deps:
 	uv sync --locked
 	uv run pre-commit install
