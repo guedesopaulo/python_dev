@@ -1,9 +1,9 @@
 """Test the package import."""
 
-import python_dev
+import src
 
 
-def test_version() -> None:
+def test_version_when_package_imported_has_version() -> None:
     """Test that version is defined."""
-    assert hasattr(python_dev, "__version__")
-    assert python_dev.__version__ == "0.0.1"
+    assert hasattr(src, "__version__")
+    assert src.__version__ == "0.0.2"
