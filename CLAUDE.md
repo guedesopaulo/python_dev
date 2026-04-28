@@ -57,11 +57,20 @@ MCP server + REST API built with FastAPI, connecting LLMs to databases and inter
 
 **External resources:**
 
-None
+None currently. When adding a new resource:
+- Create `src/resources/<module>.py` for all external I/O (DB connections, HTTP clients)
+- Use `httpx.AsyncClient` for outbound HTTP; manage lifecycle via FastAPI lifespan
+- Add connection settings to `src/config.py` (`Settings` class)
+- Mock or monkeypatch the resource layer in tests — never hit real external systems in CI
 
 **Authentication:**
 
-None
+`BearerTokenMiddleware` in `middleware.py` (ASGI-level, applied globally):
+- **Public paths** — `/`, `/health`, `/docs`, `/openapi.json` bypass auth entirely
+- **`ENVIRONMENT=local`** — validates the `Authorization: Bearer <token>` header against `LOCAL_API_TOKEN` from `.env`
+- **Cloud envs** (`dev`/`qas`/`prod`) — middleware passes through (placeholder for JWT/OAuth2 validation)
+
+To add a new public path, append it to `UNPROTECTED_PATHS` in `middleware.py`.
 
 ## Code Standards
 
