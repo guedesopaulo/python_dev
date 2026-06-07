@@ -4,6 +4,7 @@ A modern Python project template following current best practices as of 2026.
 
 ## ✨ Features
 
+- **FastAPI + MCP** — a FastMCP server auto-generated from the FastAPI routes (mounted at `/mcp`)
 - **Modern Python packaging** with `pyproject.toml`
 - **Dependency management** with `uv` for faster dependency resolution
 - **Code quality tools**: Ruff for linting and formatting, mypy for type checking
@@ -58,7 +59,8 @@ src/
 
 ### Three-Layer Pattern
 
-New modules follow a strict separation:
+New modules follow a strict separation. Only the `echo` endpoint exists today; create
+`src/service/` and `src/resources/` when a module needs business logic or external I/O.
 
 | Layer | Location | Responsibility |
 |---|---|---|

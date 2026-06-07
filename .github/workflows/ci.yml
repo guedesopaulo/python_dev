@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        # Pinned to a full version tag: astral-sh no longer publishes the moving
+        # @v8 major tag (supply-chain hardening).
+        uses: astral-sh/setup-uv@v8.2.0
+        with:
+          version: "0.11.19"
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync dependencies
+        run: uv sync --locked
+
+      - name: Lint, format, type-check (pre-commit)
+        run: uv run pre-commit run --all-files --show-diff-on-failure
+
+      - name: Test with coverage
+        run: |
+          uv run coverage run --source=. --branch -m pytest
+          uv run coverage report -m
