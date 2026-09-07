@@ -78,6 +78,25 @@ Data flows strictly top-down: `endpoints → service → resources`. Services ne
 bash scripts/01_start_mcp.sh
 ```
 
+## 🐳 Docker
+
+The REST API and the MCP server are the same ASGI app (MCP is mounted at `/mcp`), so one
+container serves both.
+
+```bash
+docker compose up --build          # API + MCP on :8000
+```
+
+The image is multi-stage, installs from `uv.lock` with `--no-dev`, runs as a non-root user, and
+declares a `HEALTHCHECK` against `/health`.
+
+Need the MCP surface on its own port (separate network zone or replica count)? The same image
+runs it standalone via a compose profile:
+
+```bash
+docker compose --profile mcp-standalone up    # adds MCP on :8002
+```
+
 ## 📝 License
 
 MIT License - feel free to use this template for your projects!

@@ -11,6 +11,10 @@ bash scripts/00_start.sh
 # Run the MCP server standalone (streamable HTTP on :8002)
 bash scripts/01_start_mcp.sh
 
+# Docker (API + MCP in one container on :8000)
+docker compose up --build
+docker compose --profile mcp-standalone up   # optional: MCP alone on :8002
+
 # Run all tests with coverage
 uv run pytest && uv run coverage report -m
 
@@ -74,6 +78,13 @@ all logging via loguru.
 
 **Config** (`src/config.py`): pydantic-settings `Settings` (`ENVIRONMENT`, `LOCAL_API_TOKEN`)
 loaded from `.env`. Singleton via `settings = Settings.model_validate({})`.
+
+**Docker**: one image serves both interfaces, since MCP is mounted on the same ASGI app.
+Multi-stage build installing from `uv.lock` with `--no-dev`, non-root user, `HEALTHCHECK` on
+`/health`. `docker-compose.yml` runs the combined service by default; the `mcp-standalone`
+profile runs the same image with `fastmcp run` on :8002 when the MCP surface needs its own port.
+CI builds the image and smoke-tests the running container (unit tests stay in the uv job, since
+the image has no dev dependencies).
 
 ## Authentication
 
