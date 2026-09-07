@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse
 from fastmcp import FastMCP
 from loguru import logger
 
+from src.config import settings
 from src.endpoints.echo import router as echo_router
 from src.exception_handlers import register_exception_handlers
 from src.middleware import BearerTokenMiddleware
@@ -34,8 +35,18 @@ register_exception_handlers(app)
 app.add_middleware(BearerTokenMiddleware)
 app.include_router(echo_router)
 
-# MCP: auto-generate tools from all FastAPI routes
-mcp = FastMCP.from_fastapi(app, name="python-dev")
+# MCP: auto-generate tools from all FastAPI routes.
+# Tools call back into these routes over HTTP, so that loopback request must carry the
+# Bearer token BearerTokenMiddleware expects — otherwise every tool call gets a 401.
+_mcp_client_kwargs: dict[str, object] = {}
+if settings.ENVIRONMENT == "local" and settings.LOCAL_API_TOKEN:
+    _mcp_client_kwargs["headers"] = {
+        "Authorization": f"Bearer {settings.LOCAL_API_TOKEN}"
+    }
+
+mcp = FastMCP.from_fastapi(
+    app, name="python-dev", httpx_client_kwargs=_mcp_client_kwargs
+)
 mcp_app = mcp.http_app(transport="http", path="/")
 app.mount("/mcp", mcp_app)
 

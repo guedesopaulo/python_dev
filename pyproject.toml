@@ -10,7 +10,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.141.1",
-    "fastmcp>=3.4.4",
+    "fastmcp>=4.0.3",
     "loguru>=0.7.3",
     "pydantic-settings>=2.15.0",
     "uvicorn>=0.52.4",
