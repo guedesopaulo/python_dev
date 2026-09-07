@@ -101,6 +101,8 @@ To add a new public path, add it to `_PUBLIC_PATHS` in `src/middleware.py`.
 
 **Style:**
 - KISS over OOP: prefer pure functions and dataclasses.
+- Max cyclomatic complexity of 10 per function (`C901`, configured in `ruff.toml`) — extract
+  helpers instead of nesting conditionals.
 - `async def` for all I/O-bound routes.
 - Structured logging with loguru.
 - Ruff config in `ruff.toml`: UP040 is ignored (mypy CI compatibility), isort uses

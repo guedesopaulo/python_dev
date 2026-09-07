@@ -23,6 +23,11 @@ fixable = ["I", "UP", "C4"]
 [lint.isort]
 force-single-line = true
 
+[lint.mccabe]
+# C901: max cyclomatic complexity per function. Matches ruff's current default,
+# set explicitly so the limit is documented and immune to default changes.
+max-complexity = 10
+
 [lint.per-file-ignores]
 "tests*" = ["ARG"]
 

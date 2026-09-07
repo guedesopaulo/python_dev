@@ -9,23 +9,23 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi>=0.139.0",
+    "fastapi>=0.141.1",
     "fastmcp>=3.4.4",
     "loguru>=0.7.3",
-    "pydantic-settings>=2.14.2",
-    "uvicorn>=0.51.0",
+    "pydantic-settings>=2.15.0",
+    "uvicorn>=0.52.4",
 ]
 
 [dependency-groups]
 dev = [
     "covdefaults>=2.3.0",
-    "coverage>=7.15.1",
+    "coverage>=7.16.0",
     "httpx>=0.28.1",
-    "mypy==2.3.0",
-    "pre-commit>=4.6.0",
+    "mypy==2.3.1",
+    "pre-commit>=4.6.2",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
-    "ruff>=0.15.21",
+    "ruff>=0.16.6",
 ]
 
 [tool.pytest.ini_options]
