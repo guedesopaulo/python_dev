@@ -37,6 +37,7 @@ make all       # deps + check + test
 make check     # pre-commit run --all-files
 make test      # pytest
 make cov       # coverage: 100% on tests/*, plus the 70% project floor
+make audit     # uv audit: fail on known vulnerabilities in uv.lock
 ```
 
 ## Architecture

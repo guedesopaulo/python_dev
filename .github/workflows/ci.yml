@@ -25,6 +25,11 @@ jobs:
       - name: Sync dependencies
         run: uv sync --locked
 
+      # Fails the build on known vulnerabilities in the lockfile (uv-native audit;
+      # the preview flag only silences the experimental-feature warning).
+      - name: Audit dependencies
+        run: uv audit --locked --preview-features audit-command
+
       - name: Lint, format, type-check (pre-commit)
         run: uv run pre-commit run --all-files --show-diff-on-failure
 

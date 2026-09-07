@@ -13,6 +13,10 @@ check:
 test:
 	uv run python -m pytest
 
+.PHONY: audit
+audit:
+	uv audit --locked --preview-features audit-command
+
 .PHONY: cov
 cov:
 	@uv run coverage erase \
