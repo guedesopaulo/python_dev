@@ -1,0 +1,49 @@
+services:
+  api:
+    build: .
+    image: python-dev:local
+    ports:
+      - "8000:8000"
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      LOCAL_API_TOKEN: ${LOCAL_API_TOKEN:-changeme}
+    restart: unless-stopped
+
+  # Optional: the SAME image serving only the MCP server on its own port.
+  # The REST API and MCP normally run in one process (MCP is mounted at /mcp), so
+  # this is not started by default. Use it when the MCP surface needs its own port,
+  # network zone or replica count:
+  #     docker compose --profile mcp-standalone up
+  mcp:
+    build: .
+    image: python-dev:local
+    profiles: ["mcp-standalone"]
+    command:
+      - fastmcp
+      - run
+      - --server-spec
+      - src/main.py:mcp
+      - --transport
+      - http
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8002"
+    ports:
+      - "8002:8002"
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-local}
+      LOCAL_API_TOKEN: ${LOCAL_API_TOKEN:-changeme}
+    # The image's HEALTHCHECK probes /health on :8000, which only the FastAPI app serves —
+    # the standalone MCP server has no such route. Fall back to a port liveness check.
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import socket; socket.create_connection(("127.0.0.1", 8002), 2).close()
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    restart: unless-stopped
