@@ -1,0 +1,8 @@
+# Normalize line endings: LF in the repo, always. A CRLF checkout has caused
+# real production breakage before — never rely on the client's autocrlf.
+* text=auto
+*.sh text eol=lf
+Makefile text eol=lf
+
+# Collapse the lockfile diff in PR review (weekly dep bumps touch hundreds of lines)
+uv.lock linguist-generated=true

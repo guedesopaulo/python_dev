@@ -1,6 +1,8 @@
 # Python Development Template
 
-A modern Python project template following current best practices as of 2026.
+[![CI](https://github.com/guedesopaulo/python_dev/actions/workflows/ci.yml/badge.svg)](https://github.com/guedesopaulo/python_dev/actions/workflows/ci.yml)
+
+A modern FastAPI + MCP template following current best practices as of 2026.
 
 ## 🚀 Using this template
 
@@ -18,12 +20,15 @@ A modern Python project template following current best practices as of 2026.
 ## ✨ Features
 
 - **FastAPI + MCP** — a FastMCP server auto-generated from the FastAPI routes (mounted at `/mcp`)
-- **Modern Python packaging** with `pyproject.toml`
-- **Dependency management** with `uv` for faster dependency resolution
-- **Code quality tools**: Ruff for linting and formatting, mypy for type checking
-- **Pre-commit hooks** for automated code quality checks
-- **Testing setup** with pytest and coverage reporting
-- **UV environment** management
+- **Bearer-token auth** (ASGI middleware) and a per-IP sliding-window **rate limiter**
+- **Docker**: multi-stage image (~68 MB, non-root, healthcheck) + `docker-compose` with an
+  optional standalone-MCP profile
+- **CI** (GitHub Actions): lint, types, tests + coverage, `uv audit`, and a container smoke
+  test that exercises a real MCP `tools/call`
+- **Dependency management** with `uv` (locked, audited)
+- **Code quality**: Ruff (lint + format, explicit rule set, complexity limit), strict mypy,
+  pre-commit hooks
+- **Testing** with pytest + coverage floor
 - **Makefile** for common development tasks
 
 ## 🛠️ Installation

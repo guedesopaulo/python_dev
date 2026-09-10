@@ -3,7 +3,6 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from fastmcp import FastMCP
@@ -59,11 +58,3 @@ async def redirect_to_docs() -> str:
 @app.get("/health", tags=["health"])
 async def health() -> dict[str, str]:
     return {"status": "ok"}
-
-
-def main() -> None:
-    uvicorn.run("src.main:app", host="0.0.0.0", port=8000, reload=True)  # nosec B104
-
-
-if __name__ == "__main__":
-    main()

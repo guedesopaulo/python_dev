@@ -28,6 +28,7 @@ FILES=(
     .github/workflows/ci.yml
     src/main.py
     CLAUDE.md
+    README.md
 )
 for f in "${FILES[@]}"; do
     perl -pi -e "s/python_dev/${SNAKE}/g; s/python-dev/${KEBAB}/g" "$f"
@@ -48,6 +49,8 @@ Manual follow-ups:
   - README.md : rewrite the title/description for your project and delete the
                 "Using this template" section
   - LICENSE   : set your own copyright holder and year (or swap the license)
+  - pyproject : confirm [project.urls] points at your repository (the rename
+                only swaps the name, not the owner)
   - Then run  : make all
 
 DONE
