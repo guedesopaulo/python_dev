@@ -2,6 +2,19 @@
 
 A modern Python project template following current best practices as of 2026.
 
+## 🚀 Using this template
+
+1. Click **Use this template** on GitHub and create your repository.
+2. Clone it and run:
+
+   ```bash
+   make rename NAME=my-project
+   ```
+
+   This rewrites the project name everywhere it is hardcoded (pyproject, Docker image
+   tags, FastAPI title, MCP server name, CI), regenerates `uv.lock`, and removes itself.
+3. Follow the printed checklist (README title, LICENSE holder), then run `make all`.
+
 ## ✨ Features
 
 - **FastAPI + MCP** — a FastMCP server auto-generated from the FastAPI routes (mounted at `/mcp`)

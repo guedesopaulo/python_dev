@@ -17,6 +17,11 @@ test:
 audit:
 	uv audit --locked --preview-features audit-command
 
+.PHONY: rename
+rename:
+	@test -n "$(NAME)" || { echo "usage: make rename NAME=my-project"; exit 2; }
+	@bash scripts/02_rename.sh "$(NAME)"
+
 .PHONY: cov
 cov:
 	@uv run coverage erase \
