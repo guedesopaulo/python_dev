@@ -1,3 +1,4 @@
+# Application template — run from source, never built as a wheel (no [build-system]).
 [project]
 name = "python_dev"
 version = "0.0.2"
@@ -15,6 +16,9 @@ dependencies = [
     "pydantic-settings>=2.15.0",
     "uvicorn>=0.52.4",
 ]
+
+[project.urls]
+Repository = "https://github.com/guedesopaulo/python_dev"
 
 [dependency-groups]
 dev = [
@@ -57,6 +61,3 @@ check_untyped_defs = false
 disallow_untyped_defs = false
 disallow_any_generics = false
 disallow_incomplete_defs = false
-
-[tool.hatch.build.targets.wheel]
-packages = ["src"]

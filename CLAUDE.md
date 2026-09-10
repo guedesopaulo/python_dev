@@ -99,6 +99,11 @@ the image has no dev dependencies).
 
 To add a new public path, add it to `_PUBLIC_PATHS` in `src/middleware.py`.
 
+## Editor
+
+`.vscode/` ships extension recommendations (ruff, python, mypy) and format-on-save via ruff.
+A devcontainer was considered and declined — the dev loop is uv on the host.
+
 ## Code Standards
 
 **Type safety:**
