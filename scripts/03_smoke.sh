@@ -12,6 +12,7 @@ cd "$(dirname "$0")/.."
 BASE="${1:-}"
 TOKEN="${LOCAL_API_TOKEN:-smoke-token}"
 PID=""
+# shellcheck disable=SC2329  # invoked indirectly by the trap below
 cleanup() { [ -n "$PID" ] && kill "$PID" 2>/dev/null || true; }
 trap cleanup EXIT
 

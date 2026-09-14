@@ -15,6 +15,7 @@ select = [
   "PT", # flake8-pytest-style
   "ARG", # flake8-unused-arguments
   "PD", # pandas-vet
+  "S", # flake8-bandit (replaces the standalone bandit hook)
   "RUF" # ruff
 ]
 ignore = ["UP040"]
@@ -29,7 +30,7 @@ force-single-line = true
 max-complexity = 10
 
 [lint.per-file-ignores]
-"tests*" = ["ARG"]
+"tests*" = ["ARG", "S101"] # pytest is built on assert
 
 [lint.flake8-bugbear]
 extend-immutable-calls = [

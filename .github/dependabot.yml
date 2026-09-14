@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Security-only: `open-pull-requests-limit: 0` disables routine version-bump PRs while
+  # leaving Dependabot security updates active. Version bumps stay with the weekly audit
+  # routine, which reviews them against this repo's standing decisions.
+  # The uv ecosystem must be declared explicitly - security updates on uv.lock do not work
+  # reliably from auto-detection alone.
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    # Only affects version updates (security updates are never delayed): if version
+    # updates are ever enabled here, a freshly published release waits before being
+    # proposed, which is a common supply-chain entry point.
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    # Only affects version updates (security updates are never delayed): if version
+    # updates are ever enabled here, a freshly published release waits before being
+    # proposed, which is a common supply-chain entry point.
+    cooldown:
+      default-days: 7

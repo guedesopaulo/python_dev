@@ -29,7 +29,7 @@ uv run ruff check --fix --unsafe-fixes  # auto-fix with type cleanup
 # Type checking
 uv run mypy .
 
-# Pre-commit (runs ruff + mypy + bandit)
+# Pre-commit (ruff, mypy, typos, shellcheck, zizmor, deptry, uv-lock, hygiene hooks)
 uv run pre-commit run --all-files
 
 # Makefile shortcuts
@@ -118,6 +118,19 @@ To add a new public path, add it to `_PUBLIC_PATHS` in `src/middleware.py`.
 
 Personal overrides belong in `.claude/settings.local.json`, which is gitignored.
 
+## CI
+
+Two jobs, both gating merge via a branch ruleset. `check` runs `uv audit`, pre-commit and
+`make cov`. `docker` lints the Dockerfile (hadolint), builds the image, scans it with Trivy,
+then smoke-tests the container with `scripts/03_smoke.sh`.
+
+Trivy blocks on **library** CVEs (ours to fix by bumping a dependency) and only reports
+**OS** ones — those come from the base image and are fixed by bumping the `FROM` tag, so
+blocking on them would turn unrelated PRs red whenever Debian publishes an advisory.
+
+Dependabot is configured security-only (`open-pull-requests-limit: 0`): CVE fixes arrive as
+PRs, routine version bumps stay with the weekly audit routine.
+
 ## Editor
 
 `.vscode/` ships extension recommendations (ruff, python, mypy) and format-on-save via ruff.
@@ -142,4 +155,5 @@ A devcontainer was considered and declined — the dev loop is uv on the host.
 - `async def` for all I/O-bound routes.
 - Structured logging with loguru.
 - Ruff config in `ruff.toml`: UP040 is ignored (mypy CI compatibility), isort uses
-  `force-single-line`, `ARG` rules are relaxed in tests.
+  `force-single-line`, `ARG` and `S101` are relaxed in tests. Security rules come from
+  ruff's `S` (flake8-bandit) selector — the standalone bandit hook was removed.

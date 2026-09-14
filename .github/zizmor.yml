@@ -1,0 +1,13 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # Trusted first-party publishers: readable version tags are allowed, and the
+        # weekly audit routine checks these pins for drift.
+        actions/*: ref-pin
+        astral-sh/*: ref-pin
+        docker/*: ref-pin
+        hadolint/*: ref-pin
+        aquasecurity/*: ref-pin
+        # Anything from another publisher must be pinned to a full commit hash.
+        "*": hash-pin
