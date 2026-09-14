@@ -63,7 +63,7 @@ jobs:
 
       # Runs here rather than in pre-commit: the hadolint hook needs a Docker daemon.
       - name: Lint Dockerfile (hadolint)
-        uses: hadolint/hadolint-action@v3.3.0
+        uses: hadolint/hadolint-action@v3.5.0
         with:
           dockerfile: Dockerfile
 
@@ -80,7 +80,7 @@ jobs:
 
       # Blocking: application-layer CVEs are ours to fix by bumping the dependency.
       - name: Scan image dependencies (Trivy)
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: python-dev:local
           scanners: vuln
@@ -95,7 +95,7 @@ jobs:
       # red whenever Debian publishes an advisory. The weekly audit routine watches the
       # base image tag instead.
       - name: Scan image OS packages (Trivy, informational)
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: python-dev:local
           scanners: vuln
