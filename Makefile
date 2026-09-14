@@ -17,6 +17,10 @@ test:
 audit:
 	uv audit --locked --preview-features audit-command
 
+.PHONY: smoke
+smoke:
+	@bash scripts/03_smoke.sh
+
 .PHONY: rename
 rename:
 	@test -n "$(NAME)" || { echo "usage: make rename NAME=my-project"; exit 2; }
