@@ -38,6 +38,7 @@ make check     # pre-commit run --all-files
 make test      # pytest
 make cov       # coverage: 100% on tests/*, plus the 70% project floor
 make audit     # uv audit: fail on known vulnerabilities in uv.lock
+make smoke     # end-to-end smoke test against a locally running instance
 ```
 
 ## Architecture
@@ -98,6 +99,24 @@ the image has no dev dependencies).
   for your JWT/OAuth2 validation).
 
 To add a new public path, add it to `_PUBLIC_PATHS` in `src/middleware.py`.
+
+## Claude Code tooling
+
+`.claude/` ships with the template, so projects created from it inherit all of this:
+
+- **`settings.json`** wires two hooks:
+  - a `Stop` hook (`hooks/pre-commit-gate.sh`) that runs pre-commit on the files touched in
+    the turn and blocks completion while they fail. It checks only changed and untracked
+    files, not `--all-files`, because the latter skips brand-new files;
+  - a `PreToolUse` hook (`hooks/block-env-read.sh`) that refuses reads/writes of `.env`
+    (`.env.example` is fine).
+- **`skills/create-pr`** prepares a branch name, PR title and description from the current
+  changes; `--apply` also creates and opens the PR.
+- **`skills/weekly-deps`** applies the weekly dependency report committed under `reports/`.
+  Its `reference.md` holds the dependency standing decisions and the report's known failure
+  modes, and is the single source of truth for them.
+
+Personal overrides belong in `.claude/settings.local.json`, which is gitignored.
 
 ## Editor
 

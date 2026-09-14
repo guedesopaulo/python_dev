@@ -56,6 +56,7 @@ make deps         # Sync dependencies and install pre-commit hooks (uv sync + pr
 make check        # Run pre-commit hooks against all files
 make test         # Run tests with pytest
 make cov          # Run coverage (erase, run, and report)
+make smoke        # End-to-end smoke test (REST + MCP) against a local instance
 make clean        # Clean cache and build artifacts
 ```
 

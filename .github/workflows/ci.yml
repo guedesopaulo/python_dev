@@ -67,24 +67,8 @@ jobs:
         run: |
           set -euo pipefail
           docker compose up -d --wait --wait-timeout 90 --no-build
-
-          curl -fsS http://127.0.0.1:8000/health | grep -q '"ok"'
-          test "$(curl -s -o /dev/null -w '%{http_code}' 'http://127.0.0.1:8000/echo?message=hi')" = "401"
-          curl -fsS -H "Authorization: Bearer $LOCAL_API_TOKEN" \
-            'http://127.0.0.1:8000/echo?message=hi' | grep -q '"hi"'
-
-          # MCP tools proxy back into the FastAPI routes over ASGITransport, so a 401 on
-          # that hop is invisible to the REST checks above -- that exact bug shipped once.
-          meta='"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientCapabilities":{}}'
-          curl -fsS -X POST http://127.0.0.1:8000/mcp/ \
-            -H "Authorization: Bearer $LOCAL_API_TOKEN" \
-            -H 'Content-Type: application/json' \
-            -H 'Accept: application/json, text/event-stream' \
-            -H 'MCP-Protocol-Version: 2026-07-28' \
-            -H 'mcp-method: tools/call' \
-            -H 'mcp-name: echo_echo_get' \
-            -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"echo_echo_get\",\"arguments\":{\"message\":\"mcp-ci-ok\"},$meta}}" \
-            | grep -q 'mcp-ci-ok'
+          # Same assertions as `make smoke`, run against the container.
+          bash scripts/03_smoke.sh http://127.0.0.1:8000
 
       # The standalone MCP profile is documented in the README, so keep it building and
       # passing its own healthcheck.
