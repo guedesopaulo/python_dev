@@ -30,6 +30,12 @@ RUN groupadd --system --gid 999 app \
 
 WORKDIR /app
 
+# The venv arrives pre-built, so pip is never used at runtime. Dropping it also removes
+# pip's vendored copies of msgpack/setuptools, which otherwise ship known CVEs.
+RUN rm -rf /usr/local/lib/python3.*/site-packages/pip \
+    /usr/local/lib/python3.*/site-packages/pip-*.dist-info \
+    /usr/local/bin/pip /usr/local/bin/pip3*
+
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --chown=app:app src ./src
 
@@ -40,11 +46,12 @@ ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-USER app
+# Numeric form so the host and Kubernetes `runAsUser` can resolve it.
+USER 999:999
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD python -c "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2).status == 200 else 1)"
+    CMD ["python", "-c", "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2).status == 200 else 1)"]
 
 # No --reload: that is dev-only (see scripts/00_start.sh). The MCP server is mounted
 # at /mcp on this same app, so one process serves both the REST API and MCP.

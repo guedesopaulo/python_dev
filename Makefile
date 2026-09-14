@@ -29,7 +29,7 @@ rename:
 .PHONY: cov
 cov:
 	@uv run coverage erase \
-	&& uv run coverage run --source=. --branch -m pytest || true \
+	&& uv run coverage run --source=. --branch -m pytest \
 	&& uv run coverage report --show-missing --skip-covered --include 'tests/*' --fail-under 100 \
 	&& uv run coverage report --show-missing --skip-covered
 

@@ -5,11 +5,24 @@ on:
     branches: [main]
   pull_request:
 
+# Least privilege by default; no job here needs more.
+permissions:
+  contents: read
+
+# A new push to a PR cancels the in-flight run for that PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
+        with:
+          # No job pushes with git credentials; don't leave them in .git/config.
+          persist-credentials: false
 
       - name: Install uv
         # Pinned to a full version tag: astral-sh no longer publishes the moving
@@ -33,17 +46,26 @@ jobs:
       - name: Lint, format, type-check (pre-commit)
         run: uv run pre-commit run --all-files --show-diff-on-failure
 
+      # `make cov` is the same gate used locally: 100% on tests/*, plus the project floor.
       - name: Test with coverage
-        run: |
-          uv run coverage run --source=. --branch -m pytest
-          uv run coverage report -m
+        run: make cov
 
   docker:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
+        with:
+          # No job pushes with git credentials; don't leave them in .git/config.
+          persist-credentials: false
 
       - uses: docker/setup-buildx-action@v4.3.0
+
+      # Runs here rather than in pre-commit: the hadolint hook needs a Docker daemon.
+      - name: Lint Dockerfile (hadolint)
+        uses: hadolint/hadolint-action@v3.5.0
+        with:
+          dockerfile: Dockerfile
 
       # Tag matches the `image:` key in docker-compose.yml, so the smoke tests below
       # can run with --no-build and still reuse this cached build.
@@ -55,6 +77,33 @@ jobs:
           tags: python-dev:local
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # Blocking: application-layer CVEs are ours to fix by bumping the dependency.
+      - name: Scan image dependencies (Trivy)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: python-dev:local
+          scanners: vuln
+          vuln-type: library
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+
+      # Informational: OS package CVEs come from the base image and are fixed by bumping
+      # the `FROM` tag, not by the PR at hand. Blocking on them would turn unrelated PRs
+      # red whenever Debian publishes an advisory. The weekly audit routine watches the
+      # base image tag instead.
+      - name: Scan image OS packages (Trivy, informational)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: python-dev:local
+          scanners: vuln
+          vuln-type: os
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '0'
+          format: table
 
       # Unit tests run in the `check` job against the dev environment; the image ships
       # without dev dependencies, so what is verified here is the artifact itself: that

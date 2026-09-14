@@ -7,7 +7,10 @@ TARGET=$(cat \
     2>/dev/null || echo "")
 
 case "$TARGET" in
-    *.env|*/.env)
+    # Templates and samples are safe to read.
+    *.env.example|*.env.sample|*.env.template) ;;
+    # The real thing, including variants like .env.local / .env.production.
+    *.env|*.env.*)
         echo ".env is off limits - it holds real credentials. Use .env.example instead." >&2
         exit 2
         ;;

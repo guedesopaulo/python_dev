@@ -14,6 +14,7 @@ dependencies = [
     "fastmcp>=4.0.3",
     "loguru>=0.7.3",
     "pydantic-settings>=2.15.0",
+    "starlette>=1.6.0",
     "uvicorn>=0.52.4",
 ]
 
@@ -24,16 +25,35 @@ Repository = "https://github.com/guedesopaulo/python_dev"
 dev = [
     "covdefaults>=2.3.0",
     "coverage>=7.16.0",
+    "deptry>=0.25.1",
     "httpx>=0.28.1",
     "mypy==2.3.1",
     "pre-commit>=4.6.2",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
+    "pytest-randomly>=5.0.0",
+    "pytest-timeout>=2.4.0",
     "ruff>=0.16.6",
 ]
 
+[tool.deptry]
+# `src` is the local package, not a third-party import: this project runs from source
+# and is deliberately not installed as a wheel (no [build-system]).
+known_first_party = ["src"]
+
+[tool.deptry.per_rule_ignores]
+# uvicorn is the ASGI server: launched from the CLI (scripts/, Docker CMD), never imported.
+DEP002 = ["uvicorn"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+addopts = "--strict-markers --strict-config --timeout=60"
+xfail_strict = true
+filterwarnings = [
+    "error",
+    # starlette 1.6's TestClient still uses a deprecated anyio alias; upstream's to fix.
+    "ignore:The anyio.abc.BlockingPortal alias is deprecated:DeprecationWarning",
+]
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
