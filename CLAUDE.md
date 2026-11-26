@@ -129,7 +129,12 @@ Trivy blocks on **library** CVEs (ours to fix by bumping a dependency) and only 
 blocking on them would turn unrelated PRs red whenever Debian publishes an advisory.
 
 Dependabot is configured security-only (`open-pull-requests-limit: 0`): CVE fixes arrive as
-PRs, routine version bumps stay with the weekly audit routine.
+one grouped PR per ecosystem, routine version bumps stay with the weekly audit routine.
+Grouping matters because the audit gate checks the whole lockfile: one PR per package
+stays red while any other package is still vulnerable.
+
+CI also runs weekly on `main` (Monday 06:00 UTC, plus `workflow_dispatch`), because new
+advisories arrive without a push and `main` would otherwise look green until the next PR.
 
 ## Editor
 

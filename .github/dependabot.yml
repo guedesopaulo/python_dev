@@ -15,6 +15,13 @@ updates:
     # proposed, which is a common supply-chain entry point.
     cooldown:
       default-days: 7
+    # Security PRs arrive as one grouped PR per ecosystem. One PR per package deadlocks
+    # against the audit gate, which checks the whole lockfile: with two packages
+    # vulnerable, each PR stays red because of the other.
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
 
   - package-ecosystem: github-actions
     directory: /
@@ -26,3 +33,10 @@ updates:
     # proposed, which is a common supply-chain entry point.
     cooldown:
       default-days: 7
+    # Security PRs arrive as one grouped PR per ecosystem. One PR per package deadlocks
+    # against the audit gate, which checks the whole lockfile: with two packages
+    # vulnerable, each PR stays red because of the other.
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]

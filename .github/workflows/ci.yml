@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   pull_request:
+  # New advisories land without any push, so main is re-audited weekly; otherwise it stays
+  # green until the next PR goes red for reasons unrelated to it. Monday 06:00 UTC, ahead of
+  # the weekly audit routine. GitHub emails the last editor of this cron line on failure.
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
 
 # Least privilege by default; no job here needs more.
 permissions:
