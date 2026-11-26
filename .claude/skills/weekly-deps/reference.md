@@ -22,6 +22,7 @@ what changed.
 | No image publishing / release workflow (GHCR was considered and declined) | Deploy and registry conventions differ per company; a template that bakes in ours gets in the way more than it helps |
 | Trivy blocks on **library** CVEs and only reports **OS** ones | OS CVEs come from the base image and are fixed by bumping `FROM`, not by the PR at hand. Blocking on them turns unrelated PRs red whenever Debian publishes an advisory |
 | Dependabot is security-only (`open-pull-requests-limit: 0`) with a 7-day cooldown | Routine version bumps belong to this weekly routine. Cooldown guards version updates only — security fixes are never delayed by it |
+| Dependabot security PRs are grouped per ecosystem (`applies-to: security-updates`), and CI re-runs weekly on `main` | Per-package PRs deadlock against the whole-lockfile audit gate, and without a scheduled run `main` stays green while advisories pile up. Both together let 103 CVEs and 17 red PRs accumulate unnoticed for two months (cleared in #45) |
 | hadolint runs in CI, and shellcheck uses `shellcheck-py` | Both upstream pre-commit hooks shell out to Docker, which would break `make check` on any machine without a running daemon |
 | GitHub Actions are pinned by version tag, not commit SHA, with a zizmor policy allowing trusted publishers | Readability over hash churn; `.github/zizmor.yml` still forces hash-pinning for any publisher outside the allow-list |
 
