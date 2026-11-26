@@ -2,9 +2,13 @@ rules:
   unpinned-uses:
     config:
       policies:
-        # Trusted first-party publishers: readable version tags are allowed, and the
-        # weekly audit routine checks these pins for drift.
+        # Trusted first-party publishers: readable version tags are allowed, as long as
+        # the tag is an immutable GitHub release (it cannot be moved, which is what spared
+        # trivy-action v0.35.0 when its other tags were rewritten in March 2026). The weekly
+        # audit routine checks these pins for drift and immutability.
         actions/*: ref-pin
+        # actions/checkout publishes no immutable releases, so its tags stay movable.
+        actions/checkout: hash-pin
         astral-sh/*: ref-pin
         docker/*: ref-pin
         hadolint/*: ref-pin

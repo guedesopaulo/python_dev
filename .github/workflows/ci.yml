@@ -25,17 +25,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      # Hash-pinned: actions/checkout publishes no immutable releases, so even its full
+      # version tags can be moved (see .github/zizmor.yml).
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # No job pushes with git credentials; don't leave them in .git/config.
           persist-credentials: false
 
       - name: Install uv
-        # Pinned to a full version tag: astral-sh no longer publishes the moving
-        # @v8 major tag (supply-chain hardening).
-        uses: astral-sh/setup-uv@v8.2.0
+        # Pinned to a full version tag, which is an immutable release (supply-chain
+        # hardening): astral-sh no longer publishes moving major tags.
+        uses: astral-sh/setup-uv@v10.4.0
         with:
-          version: "0.12.10"
+          version: "0.13.10"
           enable-cache: true
 
       - name: Set up Python
@@ -60,12 +62,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      # Hash-pinned: actions/checkout publishes no immutable releases, so even its full
+      # version tags can be moved (see .github/zizmor.yml).
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # No job pushes with git credentials; don't leave them in .git/config.
           persist-credentials: false
 
-      - uses: docker/setup-buildx-action@v4.3.0
+      - uses: docker/setup-buildx-action@v4.4.1
 
       # Runs here rather than in pre-commit: the hadolint hook needs a Docker daemon.
       - name: Lint Dockerfile (hadolint)
@@ -76,7 +80,7 @@ jobs:
       # Tag matches the `image:` key in docker-compose.yml, so the smoke tests below
       # can run with --no-build and still reuse this cached build.
       - name: Build image
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           load: true

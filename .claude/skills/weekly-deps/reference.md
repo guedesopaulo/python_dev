@@ -24,7 +24,7 @@ what changed.
 | Dependabot is security-only (`open-pull-requests-limit: 0`) with a 7-day cooldown | Routine version bumps belong to this weekly routine. Cooldown guards version updates only — security fixes are never delayed by it |
 | Dependabot security PRs are grouped per ecosystem (`applies-to: security-updates`), and CI re-runs weekly on `main` | Per-package PRs deadlock against the whole-lockfile audit gate, and without a scheduled run `main` stays green while advisories pile up. Both together let 103 CVEs and 17 red PRs accumulate unnoticed for two months (cleared in #45) |
 | hadolint runs in CI, and shellcheck uses `shellcheck-py` | Both upstream pre-commit hooks shell out to Docker, which would break `make check` on any machine without a running daemon |
-| GitHub Actions are pinned by version tag, not commit SHA, with a zizmor policy allowing trusted publishers | Readability over hash churn; `.github/zizmor.yml` still forces hash-pinning for any publisher outside the allow-list |
+| GitHub Actions are pinned by version tag, not commit SHA, for trusted publishers, but **only when the tag is an immutable GitHub release**; otherwise hash-pin (today: `actions/checkout`) | Readability over hash churn. A tag is only as safe as it is immovable: in March 2026 an attacker rewrote 76 of 77 `trivy-action` tags (GHSA-69fq-xp46-6x23), and only the immutable release survived. SHA-pinning every action adds churn without protection once the release is immutable. `.github/zizmor.yml` enforces hash-pinning for publishers outside the allow-list and for `actions/checkout` |
 
 ## Known failure modes of the report
 
@@ -55,7 +55,11 @@ Beyond `pyproject.toml`, these carry pinned versions that go stale silently:
 - **GitHub Actions** (`.github/workflows/ci.yml`): actions/checkout, astral-sh/setup-uv,
   docker/setup-buildx-action, docker/build-push-action, hadolint/hadolint-action,
   aquasecurity/trivy-action. Verify a tag actually exists before proposing it — a
-  non-existent ref fails the whole job at setup (this has happened).
+  non-existent ref fails the whole job at setup (this has happened). Also check it is an
+  immutable release: `gh api repos/<owner>/<repo>/releases/tags/<tag> --jq .immutable`.
+  Publishers decide this per release, so check on every bump. If it is `false`, propose a
+  hash pin with the version as a trailing comment (`@<sha> # vX.Y.Z`) and a matching
+  `hash-pin` entry in `.github/zizmor.yml`.
 - **uv itself**, pinned in three places that must agree: the `setup-uv` step in CI, the
   `COPY --from=ghcr.io/astral-sh/uv` line in the Dockerfile, and the `uv-pre-commit` rev.
 - **Dockerfile base image** (`python:3.13-slim-bookworm`) — the fix for OS-level CVEs.
