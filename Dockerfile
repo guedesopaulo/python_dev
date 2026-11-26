@@ -4,7 +4,7 @@
 FROM python:3.13-slim-bookworm AS builder
 
 # Pinned to the same uv version used locally and in CI.
-COPY --from=ghcr.io/astral-sh/uv:0.12.10 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.10 /uv /uvx /bin/
 
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
